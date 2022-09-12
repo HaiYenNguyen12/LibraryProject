@@ -23,14 +23,15 @@ namespace DatingApp.API.Database.entities
         public string? Genre { get; set; }
         public string? CoverUrl { get; set; }
         public DateTime DateAdded { get; set; }
-
-
         //Navigation Properties
 
         public int PublisherId { get; set; }
         public Publisher Publisher { get; set; }
 
         public List<Book_Author>  Book_Authors { get; set; }
+        public int? Copies_Owned { get; set; }
+
+        public List<Loan> Loans {get; set;}
 
        
 

@@ -16,16 +16,18 @@ namespace DatingApp.API.Database.entities
         [Required]
         [StringLength(32)]
         public string  Username { get; set; }
-
         
         [Required]
         [StringLength(255)]
         public string  Email { get; set; }
 
         public string Role { get; set; }
+        public DateTime? DateJoin { get; set; }
         
         public byte[] passwordSalt { get; set; }
    
         public byte[] passwordHash { get; set; }
+
+        public List<Loan> Loans { get; set; }
     }
 }

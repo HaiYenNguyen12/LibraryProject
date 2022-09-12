@@ -23,13 +23,20 @@ namespace DatingApp.API.Database
                 .WithMany(ba => ba.Book_Authors)
                 .HasForeignKey(bi=> bi.AuthorId);
 
-            // builder.Entity<Book_Author>()
-            //     .HasOne(b => b.Book)
-            //     .WithMany(ba => ba.Book_Authors)
-            //     .HasForeignKey(bi=> bi.BookId);
+            builder.Entity<Loan>()
+                .HasOne(b => b.Book)
+                .WithMany(bu => bu.Loans)
+                .HasForeignKey(bi=> bi.BookId);
+
+
+            builder.Entity<Loan>()
+            .HasOne(b => b.User)
+            .WithMany(bu => bu.Loans)
+            .HasForeignKey(bu=> bu.UserId);
             
         }
-        // public DbSet<User> Users { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Loan> Loans { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<Publisher> Publishers { get; set; }
         public DbSet<Author> Authors { get; set; }
