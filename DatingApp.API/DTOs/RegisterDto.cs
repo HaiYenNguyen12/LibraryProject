@@ -23,5 +23,28 @@ namespace DatingApp.API.DTOs
 
         public string Role { get; set; } = "user";
 
+       
+
+    }
+
+
+    public class UserWithBooksDto
+    {
+        [Required]
+        [StringLength(32)]
+       
+        public string  Username { get; set; } = string.Empty;
+
+        
+        [Required]
+        [StringLength(255)]
+        [EmailAddress]
+        public string  Email { get; set; } = String.Empty;
+        [Required]
+        public DateTime? DateJoin { get; set; }
+        public string Role { get; set; } = "user";
+
+        public List<string> BookNames { get; set; }
+
     }
 }

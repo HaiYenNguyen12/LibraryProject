@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DatingApp.API.Database.Migrations
+namespace DatingApp.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220911152418_IntialDB")]
-    partial class IntialDB
+    [Migration("20221121170131_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -41,8 +41,8 @@ namespace DatingApp.API.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Author")
-                        .HasColumnType("longtext");
+                    b.Property<int?>("Copies_Owned")
+                        .HasColumnType("int");
 
                     b.Property<string>("CoverUrl")
                         .HasColumnType("longtext");
@@ -62,7 +62,7 @@ namespace DatingApp.API.Database.Migrations
                     b.Property<bool>("IsRead")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int?>("PublisherId")
+                    b.Property<int>("PublisherId")
                         .HasColumnType("int");
 
                     b.Property<int?>("Rate")
@@ -99,6 +99,30 @@ namespace DatingApp.API.Database.Migrations
                     b.ToTable("Book_Author");
                 });
 
+            modelBuilder.Entity("DatingApp.API.Database.entities.Loan", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Loan_Date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Loan");
+                });
+
             modelBuilder.Entity("DatingApp.API.Database.entities.Publisher", b =>
                 {
                     b.Property<int>("Id")
@@ -113,11 +137,49 @@ namespace DatingApp.API.Database.Migrations
                     b.ToTable("Publisher");
                 });
 
+            modelBuilder.Entity("DatingApp.API.Database.entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DateJoin")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
+
+                    b.Property<byte[]>("passwordHash")
+                        .IsRequired()
+                        .HasColumnType("longblob");
+
+                    b.Property<byte[]>("passwordSalt")
+                        .IsRequired()
+                        .HasColumnType("longblob");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("User");
+                });
+
             modelBuilder.Entity("DatingApp.API.Database.entities.Book", b =>
                 {
                     b.HasOne("DatingApp.API.Database.entities.Publisher", "Publisher")
                         .WithMany("Books")
-                        .HasForeignKey("PublisherId");
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Publisher");
                 });
@@ -141,6 +203,25 @@ namespace DatingApp.API.Database.Migrations
                     b.Navigation("Book");
                 });
 
+            modelBuilder.Entity("DatingApp.API.Database.entities.Loan", b =>
+                {
+                    b.HasOne("DatingApp.API.Database.entities.Book", "Book")
+                        .WithMany("Loans")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DatingApp.API.Database.entities.User", "User")
+                        .WithMany("Loans")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DatingApp.API.Database.entities.Author", b =>
                 {
                     b.Navigation("Book_Authors");
@@ -149,11 +230,18 @@ namespace DatingApp.API.Database.Migrations
             modelBuilder.Entity("DatingApp.API.Database.entities.Book", b =>
                 {
                     b.Navigation("Book_Authors");
+
+                    b.Navigation("Loans");
                 });
 
             modelBuilder.Entity("DatingApp.API.Database.entities.Publisher", b =>
                 {
                     b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("DatingApp.API.Database.entities.User", b =>
+                {
+                    b.Navigation("Loans");
                 });
 #pragma warning restore 612, 618
         }
