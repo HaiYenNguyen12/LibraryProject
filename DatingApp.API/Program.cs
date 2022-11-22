@@ -21,7 +21,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 //Configure the Services
 
 builder.Services.AddTransient<BooksService>();
-builder.Services.AddTransient<PublishersService>();
+builder.Services.AddTransient<IPublisherService,PublishersService>();
 builder.Services.AddTransient<IAuthorService, AuthorsService>();
 builder.Services.AddTransient<UsersService>();
 builder.Services.AddTransient<LoansService>();

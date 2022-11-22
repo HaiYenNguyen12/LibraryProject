@@ -25,12 +25,12 @@ namespace DatingApp.API.Database.entities
         //Navigation Properties
 
         public int PublisherId { get; set; }
-        public Publisher Publisher { get; set; }
+        public virtual Publisher Publisher { get; set; }
 
-        public List<Book_Author>  Book_Authors { get; set; }
+        public virtual List<Book_Author>  Book_Authors { get; set; }
         public int? Copies_Owned { get; set; }
 
-        public List<Loan> Loans {get; set;}
+        public virtual List<Loan> Loans {get; set;}
 
        
 

@@ -16,7 +16,7 @@ namespace DatingApp.API.Database.entities
 
         //Navigations Properties
 
-        public List<Book_Author>  Book_Authors { get; set; }
+        public virtual List<Book_Author>  Book_Authors { get; set; }
 
     }
 }

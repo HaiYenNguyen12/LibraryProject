@@ -40,13 +40,9 @@ public class AuthorsController : BaseApiController
 
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetBookById(int id)
+    public async Task<IActionResult> GetById(int id)
     {
         var book = await _authorsService.GetByIdAsync(id);
-        if (book == null)
-        {
-            return NotFound("The book doesn't exist");
-        }
         return Ok(book);
     }
     [Authorize(Roles = RoleConstant.Admin)]
