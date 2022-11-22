@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using DatingApp.API.Database;
 using DatingApp.API.Database.entities;
 using DatingApp.API.DTOs;
+using DatingApp.API.Interface;
+using Microsoft.EntityFrameworkCore;
 
 namespace DatingApp.API.Services
 {
-    public class BooksService
+    public class BooksService : IBookService
     {
         private DataContext _context;
         public BooksService(DataContext context)
@@ -16,8 +18,9 @@ namespace DatingApp.API.Services
             _context = context;
         }
 
-        public void AddBookWithAuthors(BookDto bookdto)
+        public async Task<int> AddBookWithAuthors(BookDto bookdto)
         {
+            if (bookdto == null) return -1;
                 var _book = new Book(){
                     Title = bookdto.Title,
                     Description = bookdto.Description,
@@ -33,7 +36,7 @@ namespace DatingApp.API.Services
 
                 _context.Books.Add(_book);
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 foreach (var id in bookdto.AuthorIds)
                 {
@@ -43,61 +46,58 @@ namespace DatingApp.API.Services
                         AuthorId = id
                     };
                     _context.Book_Authors.Add(_book_author);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
-               
-                
 
-                 
-                
+            return 1;
         }
 
 
-        public List<Book> GetAllBooks() => _context.Books.ToList();
+        public async Task<IEnumerable<Book>> GetAllBooks() => await _context.Books.ToListAsync();
 
-        public BookAuthorDto GetBookById (int id)
+        public async Task<BookAuthorDto> GetBookById (int id)
         {
-            var _bookAuthors = _context.Books.Where(n=> n.Id == id).Select(book => new BookAuthorDto(){
-                    Title = book.Title,
-                    Description = book.Description,
-                    IsRead = book.IsRead,
-                    DateRead = book.IsRead ? book.DateRead.Value : null,
-                    Rate = book.IsRead ? book.Rate.Value : null,
-                    Genre = book.Genre,
-                    CoverUrl = book.CoverUrl,
-                    PublisherName = book.Publisher.Name,
-                    AuthorNames = book.Book_Authors.Select(n=> n.Author.FullName).ToList()
+            var _bookAuthors = await _context.Books.Where(n => n.Id == id).Select(book => new BookAuthorDto()
+            {
+                Title = book.Title,
+                Description = book.Description,
+                IsRead = book.IsRead,
+                DateRead = book.IsRead ? book.DateRead.Value : null,
+                Rate = book.IsRead ? book.Rate.Value : null,
+                Genre = book.Genre,
+                CoverUrl = book.CoverUrl,
+                PublisherName = book.Publisher.Name,
+                AuthorNames = book.Book_Authors.Select(n => n.Author.FullName).ToList()
 
-            }).FirstOrDefault();
+            }).FirstOrDefaultAsync();
             return _bookAuthors;
         }
 
-        public Book UpdateBookById(BookDto bookdto, int id)
+        public async Task<int> UpdateBookById(BookDto bookdto, int id)
         {
-            var _book = _context.Books.FirstOrDefault(n=> n.Id == id);
-            if (_book != null){
-                    _book.Title = bookdto.Title;
-                    _book.Description = bookdto.Description;
-                    _book.IsRead = bookdto.IsRead;
-                    _book.DateRead = bookdto.IsRead ? bookdto.DateRead.Value : null;
-                    _book.Rate = bookdto.IsRead ? bookdto.Rate.Value : null;
-                    _book.Genre = bookdto.Genre;
-                    _book.CoverUrl = bookdto.CoverUrl;
-                    _context.SaveChanges();
-            
-            }
-            return _book;
+            var _book = await _context.Books.FirstOrDefaultAsync(n=> n.Id == id);
+            if (_book == null) return -1;
+
+            _book.Title = bookdto.Title;
+            _book.Description = bookdto.Description;
+            _book.IsRead = bookdto.IsRead;
+            _book.DateRead = bookdto.IsRead ? bookdto.DateRead.Value : null;
+            _book.Rate = bookdto.IsRead ? bookdto.Rate.Value : null;
+            _book.Genre = bookdto.Genre;
+            _book.CoverUrl = bookdto.CoverUrl;
+            await _context.SaveChangesAsync();
+
+
+            return _book.Id;
         }
 
-        public void DeleteBook (int id) 
+        public async Task<int> DeleteBook (int id) 
         {
             var _book = _context.Books.FirstOrDefault(n=> n.Id == id);
-            if (_book != null) {
-                _context.Books.Remove(_book);
-                _context.SaveChanges();
-            }
-
-
+            if (_book == null) return -1;
+            _context.Books.Remove(_book);
+            await _context.SaveChangesAsync();
+            return _book.Id;
         }
     }
 
