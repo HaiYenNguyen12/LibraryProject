@@ -24,7 +24,6 @@ builder.Services.AddTransient<IBookService,BooksService>();
 builder.Services.AddTransient<IPublisherService,PublishersService>();
 builder.Services.AddTransient<IAuthorService, AuthorsService>();
 builder.Services.AddTransient<UsersService>();
-builder.Services.AddTransient<LoansService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 // builder.Services.AddDbContext<DataContext>(
 //             dbContextOptions => dbContextOptions
