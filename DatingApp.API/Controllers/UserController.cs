@@ -36,7 +36,7 @@ namespace DatingApp.API.Controllers
 
         [Authorize]
         [HttpGet("{id}")]
-        public ActionResult<UserWithBooksDto> Get(int id) 
+        public ActionResult<UserWithBooksDto> GetUserWithBook(int id) 
         {
             // var user = _context.Users.FirstOrDefault(u => u.Id == id);
             var user = _usersService.GetUserWithBooks(id);

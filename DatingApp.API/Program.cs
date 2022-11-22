@@ -2,6 +2,7 @@
 using DatingApp.API.Database;
 using DatingApp.API.Database.entities;
 using DatingApp.API.Extensions;
+using DatingApp.API.Interface;
 using DatingApp.API.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,11 +16,13 @@ var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
 builder.Services.AddControllers();
 
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 //Configure the Services
 
 builder.Services.AddTransient<BooksService>();
 builder.Services.AddTransient<PublishersService>();
-builder.Services.AddTransient<AuthorsService>();
+builder.Services.AddTransient<IAuthorService, AuthorsService>();
 builder.Services.AddTransient<UsersService>();
 builder.Services.AddTransient<LoansService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

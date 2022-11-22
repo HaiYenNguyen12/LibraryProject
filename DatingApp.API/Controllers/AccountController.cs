@@ -3,6 +3,7 @@ using DatingApp.API.Database.entities;
 using DatingApp.API.DTOs;
 using DatingApp.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
